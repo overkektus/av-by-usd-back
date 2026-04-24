@@ -1,4 +1,4 @@
-import { rateManager } from './api';
+import { rateManager } from '../../api';
 import { processPrices } from './converter';
 
 // Initialize
