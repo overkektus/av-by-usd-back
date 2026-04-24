@@ -5,7 +5,6 @@ import { defineConfig, BuildOptions } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { stripDevIcons } from './custom-vite-plugins';
 import manifest from './manifest.json';
-import devManifest from './manifest.dev.json';
 import pkg from './package.json';
 
 
@@ -13,8 +12,7 @@ const isDev = process.env.__DEV__ === 'true';
 
 export const baseManifest = {
     ...manifest,
-    version: pkg.version,
-    ...(isDev ? devManifest : {} as ManifestV3Export)
+    version: pkg.version
 } as ManifestV3Export
 
 export const baseBuildOptions: BuildOptions = {
