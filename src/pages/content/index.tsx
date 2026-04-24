@@ -6,9 +6,14 @@ async function init() {
   const rate = await rateManager.fetchBestRate();
   processPrices(rate);
   
-  // Use MutationObserver for dynamically loaded elements
+  let timeoutId: number | null = null;
   const observer = new MutationObserver(() => {
-    processPrices(rate);
+    if (timeoutId) {
+      window.clearTimeout(timeoutId);
+    }
+    timeoutId = window.setTimeout(() => {
+      processPrices(rate);
+    }, 200);
   });
   
   observer.observe(document.body, {
