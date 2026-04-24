@@ -19,14 +19,27 @@ const TARGET_CONFIGS: PriceTargetConfig[] = [
   { selector: '.listing-index__price' },
 
   // On main page. New auto section.
-  { selector: '.salon-listing-top__prices', 
-    customStyle: { 
-      color: "#fff"
-    }
-   },
+  { 
+    selector: '.salon-listing-top__prices', 
+    customStyle: { color: "#fff" }
+  },
 
   // On filter page. https://cars.av.by/filter
-  { selector: '.listing-item__price-primary' }
+  { selector: '.listing-item__price-primary' },
+
+  // --- NEW SALON SELECTORS ---
+  
+  // Salon main banner (Adfox)
+  { selector: '.price' },
+
+  // Salon model banner
+  { selector: '.salon-listing-model__banner-priсe' },
+
+  // Salon items in search
+  { selector: '.salon-listing-items__item-price-byn' },
+
+  // Salon car card primary price
+  { selector: '.salon-card__price-primary' }
 ];
 
 export function processPrices(usdRate: number) {
