@@ -3,8 +3,10 @@
   "name": "AV.BY USD Converter",
   "description": "Converts prices on av.by to USD",
   "icons": {
-    "128": "icon-128.png",
-    "32": "icon-32.png"
+    "16": "avby-usd-back16x16.png",
+    "32": "avby-usd-back32x32.png",
+    "48": "avby-usd-back48x48.png",
+    "128": "avby-usd-back128x128.png"
   },
   "content_scripts": [
     {
