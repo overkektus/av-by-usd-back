@@ -25,10 +25,12 @@ export class RateManager {
 
         return rate;
       } catch (e) {
-        console.warn(`[AV.BY USD] Failed to fetch rate from ${fetcher.sourceName}:`, e);
+        // We stay silent here because failing to find a rate in the DOM or from one of the APIs
+        // is an expected behavior in a fallback chain.
       }
     }
     
+    console.error('[AV.BY USD] All exchange rate fetchers failed.');
     throw new Error('All exchange rate fetchers failed.');
   }
 }
