@@ -3,14 +3,29 @@ type InsertPositionType = 'afterend' | 'beforeend' | 'afterbegin' | 'beforebegin
 interface PriceTargetConfig {
   selector: string;
   insertPosition?: InsertPositionType;
+  color?: string;
+  backgroundColor?: string;
   customStyle?: Partial<CSSStyleDeclaration>;
 }
 
 const TARGET_CONFIGS: PriceTargetConfig[] = [
+  // On car page. Example:https://cars.av.by/audi/q4-e-tron/128024197
   { selector: '.card__price-button' },
+
+  // On car page same prices section and parts section.
   { selector: '.listing-top__price-primary' },
+
+  // On main page. Interesting today section. 
   { selector: '.listing-index__price' },
-  { selector: '.salon-listing-top__prices' },
+
+  // On main page. New auto section.
+  { selector: '.salon-listing-top__prices', 
+    customStyle: { 
+      color: "#fff"
+    }
+   },
+
+  // On filter page. https://cars.av.by/filter
   { selector: '.listing-item__price-primary' }
 ];
 
@@ -33,10 +48,17 @@ export function processPrices(usdRate: number) {
         const usdDiv = document.createElement('div');
         usdDiv.className = 'av-usd-converted-price';
         usdDiv.style.fontSize = '14px';
-        usdDiv.style.color = '#707f8d';
+        usdDiv.style.color = config.color || '#707f8d'; // Custom color or default grey
         usdDiv.style.marginTop = '4px';
         usdDiv.style.fontWeight = 'bold';
         
+        if (config.backgroundColor) {
+          usdDiv.style.backgroundColor = config.backgroundColor;
+          usdDiv.style.padding = '2px 6px';
+          usdDiv.style.borderRadius = '4px';
+          usdDiv.style.display = 'inline-block';
+        }
+
         if (config.customStyle) {
           Object.assign(usdDiv.style, config.customStyle);
         }
@@ -49,3 +71,4 @@ export function processPrices(usdRate: number) {
     });
   }
 }
+
