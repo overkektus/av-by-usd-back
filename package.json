@@ -8,6 +8,9 @@
     "build": "vite build --config vite.config.chrome.ts",
     "build:chrome": "vite build --config vite.config.chrome.ts",
     "build:firefox": "vite build --config vite.config.firefox.ts",
+    "zip:chrome": "cd dist_chrome && zip -r ../artifacts/avby-usd-converter-chrome.zip .",
+    "zip:firefox": "cd dist_firefox && zip -r ../artifacts/avby-usd-converter-firefox.zip .",
+    "zip": "yarn zip:chrome && yarn zip:firefox",
     "dev": "nodemon --config nodemon.chrome.json",
     "dev:chrome": "nodemon --config nodemon.chrome.json",
     "dev:firefox": "nodemon --config nodemon.firefox.json"
