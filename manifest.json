@@ -9,6 +9,10 @@
     "48": "avby-usd-back48x48.png",
     "128": "avby-usd-back128x128.png"
   },
+  "action": {
+    "default_popup": "src/pages/popup/index.html",
+    "default_icon": "avby-usd-back48x48.png"
+  },
   "content_scripts": [
     {
       "matches": [
