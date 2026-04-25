@@ -43,6 +43,13 @@ async function init() {
 
   browser.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && changes.targetCurrency) {
+      // ONLY remove the processed flag. 
+      // Do NOT remove .av-converted-price elements here!
+      // processPrices will replace them instantly when the new rate is ready.
+      document.querySelectorAll('.usd-processed').forEach(el => {
+        el.classList.remove('usd-processed');
+      });
+      
       runConversion();
     }
   });
