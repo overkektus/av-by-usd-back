@@ -11,7 +11,10 @@ import {
 import { Label } from '../../components/ui/label';
 import { Switch } from '../../components/ui/switch';
 import { RefreshCw, Power } from 'lucide-react';
+import { cn, withMinDelay } from '../../lib/utils';
 import { rateManager } from '../../api';
+
+const MIN_LOADING_MS = 300;
 
 export const Popup: React.FC = () => {
   const [currency, setCurrency] = useState<Currency>('USD');
@@ -22,7 +25,7 @@ export const Popup: React.FC = () => {
   const fetchCurrentRate = async (cur: Currency, force = false) => {
     setIsLoading(true);
     try {
-      const val = await rateManager.fetchBestRate(cur, force);
+      const val = await withMinDelay(rateManager.fetchBestRate(cur, force), MIN_LOADING_MS);
       setRate(val);
     } catch (e) {
       console.error(e);
@@ -83,7 +86,7 @@ export const Popup: React.FC = () => {
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="currency" className="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500 ml-1">
+            <Label htmlFor="currency" className="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400 ml-1">
               Валюта для пересчета
             </Label>
             <Select value={currency} onValueChange={handleCurrencyChange}>
@@ -101,7 +104,9 @@ export const Popup: React.FC = () => {
           {/* Rate Info */}
           <div className="flex items-center justify-between px-1">
             <div className="flex flex-col">
-              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-tight">Текущий курс</span>
+              <span className="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400 ml-1">
+                Текущий курс
+              </span>
               <span className="text-sm font-mono font-bold text-slate-700 dark:text-slate-300">
                 {isLoading ? 'Загрузка...' : rate ? `1 ${currency} = ${rate.toFixed(4)} BYN` : '---'}
               </span>
