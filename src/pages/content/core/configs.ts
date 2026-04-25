@@ -1,4 +1,5 @@
 import { PriceTargetConfig } from './types';
+export type { PriceTargetConfig };
 
 export const TARGET_CONFIGS: PriceTargetConfig[] = [
   // On car page. Example:https://cars.av.by/audi/q4-e-tron/128024197
