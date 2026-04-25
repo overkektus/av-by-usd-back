@@ -12,10 +12,12 @@ export class RateManager {
     this.cacheManager = cacheManager;
   }
 
-  async fetchBestRate(currency: Currency): Promise<number> {
-    const cachedRate = await this.cacheManager.getValidRate(currency);
-    if (cachedRate !== null) {
-      return cachedRate;
+  async fetchBestRate(currency: Currency, force = false): Promise<number> {
+    if (!force) {
+      const cachedRate = await this.cacheManager.getValidRate(currency);
+      if (cachedRate !== null) {
+        return cachedRate;
+      }
     }
 
     await this.syncAllRates();
