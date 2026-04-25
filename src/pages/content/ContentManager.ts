@@ -23,6 +23,13 @@ export class ContentManager {
   }
 
   private runConversion = async () => {
+    const { isEnabled = true } = await browser.storage.local.get('isEnabled');
+    
+    if (!isEnabled) {
+      this.cleanup();
+      return;
+    }
+
     const hasUnprocessed = TARGET_CONFIGS.some(config => 
       document.querySelector(`${config.selector}:not(.usd-processed)`)
     );
@@ -38,6 +45,17 @@ export class ContentManager {
     }
   };
 
+  private cleanup() {
+    // Remove processed flag
+    document.querySelectorAll('.usd-processed').forEach(el => {
+      el.classList.remove('usd-processed');
+    });
+    // Remove injected elements
+    document.querySelectorAll('.av-converted-price').forEach(el => {
+      el.remove();
+    });
+  }
+
   private setupObserver() {
     this.observer = new MutationObserver(() => {
       if (this.timeoutId) window.clearTimeout(this.timeoutId);
@@ -52,11 +70,15 @@ export class ContentManager {
 
   private setupStorageListener() {
     browser.storage.onChanged.addListener((changes, area) => {
-      if (area === 'local' && changes.targetCurrency) {
-        document.querySelectorAll('.usd-processed').forEach(el => {
-          el.classList.remove('usd-processed');
-        });
-        this.runConversion();
+      if (area === 'local' && (changes.targetCurrency || changes.isEnabled)) {
+        if (changes.isEnabled && !changes.isEnabled.newValue) {
+          this.cleanup();
+        } else {
+          document.querySelectorAll('.usd-processed').forEach(el => {
+            el.classList.remove('usd-processed');
+          });
+          this.runConversion();
+        }
       }
     });
   }
