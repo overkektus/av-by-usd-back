@@ -1,4 +1,5 @@
 export type Currency = 'USD' | 'EUR' | 'RUB';
+export type AllRates = Record<Currency, number>;
 
 export interface NbrbResponse {
   Cur_ID: number;

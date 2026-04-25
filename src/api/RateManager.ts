@@ -18,20 +18,37 @@ export class RateManager {
       return cachedRate;
     }
 
+    await this.syncAllRates();
+
+    const freshRate = await this.cacheManager.getValidRate(currency);
+
+    if (freshRate !== null) {
+      return freshRate;
+    }
+
+    throw new Error(`Failed to obtain exchange rate for ${currency} even after sync.`);
+  }
+
+  async syncAllRates(): Promise<void> {
     for (const fetcher of this.fetchers) {
       try {
-        const rate = await fetcher.fetchRate(currency);
-        logger.log(`Successfully fetched ${currency} rate from ${fetcher.sourceName}: ${rate}`);
-        
-        await this.cacheManager.saveRate(currency, rate);
+        const rates = await fetcher.fetchAllRates();
+        const currencies = Object.keys(rates) as Currency[];
 
-        return rate;
+        if (currencies.length === 0) continue;
+
+        for (const cur of currencies) {
+          const val = rates[cur];
+          if (typeof val === 'number') {
+            await this.cacheManager.saveRate(cur, val);
+          }
+        }
+
+        logger.log(`Successfully synced all rates from ${fetcher.sourceName}`);
+        return;
       } catch (e) {
-        logger.warn(`Failed to fetch ${currency} from ${fetcher.sourceName}: ${e instanceof Error ? e.message : e}`);
+        logger.warn(`Bulk fetch failed from ${fetcher.sourceName}: ${e instanceof Error ? e.message : e}`);
       }
     }
-    
-    logger.error(`All exchange rate fetchers failed for ${currency}.`);
-    throw new Error(`All exchange rate fetchers failed for ${currency}.`);
   }
 }

@@ -1,5 +1,5 @@
 import { CourseFetcher } from './CourseFetcher';
-import { Currency } from '../types';
+import { AllRates, Currency } from '../types';
 
 export class DomFetcher extends CourseFetcher {
   get sourceName(): string { 
@@ -56,5 +56,45 @@ export class DomFetcher extends CourseFetcher {
     }
 
     throw new Error(`Currency ${currency} not found in page DOM`);
+  }
+
+  async fetchAllRates(): Promise<Partial<AllRates>> {
+    const result: Partial<AllRates> = {};
+    
+    // Check if we are on /currency page with the full form
+    const bynInput = document.querySelector('input[name="byn"]') as HTMLInputElement;
+    const usdInput = document.querySelector('input[name="usd"]') as HTMLInputElement;
+    
+    if (bynInput && usdInput) {
+      const bynVal = parseFloat(bynInput.value.replace(',', '.'));
+      const usdVal = parseFloat(usdInput.value.replace(',', '.'));
+      
+      if (!isNaN(bynVal) && !isNaN(usdVal) && usdVal === 1) {
+        result.USD = bynVal;
+        
+        // Try to get others
+        const eurInput = document.querySelector('input[name="eur"]') as HTMLInputElement;
+        const rubInput = document.querySelector('input[name="rub"]') as HTMLInputElement;
+        
+        if (eurInput) {
+          const val = parseFloat(eurInput.value.replace(',', '.'));
+          if (!isNaN(val) && val > 0) result.EUR = bynVal / val;
+        }
+        
+        if (rubInput) {
+          const val = parseFloat(rubInput.value.replace(',', '.'));
+          if (!isNaN(val) && val > 0) result.RUB = bynVal / val;
+        }
+        
+        return result;
+      }
+    }
+    
+    // Fallback: just try USD from the page
+    try {
+      result.USD = await this.fetchRate('USD');
+    } catch (e) {}
+    
+    return result;
   }
 }
