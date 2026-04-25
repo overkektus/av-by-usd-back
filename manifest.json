@@ -12,14 +12,23 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*.av.by/*"
+        "*://*.av.by/*",
+        "*://*.yandex.ru/adfox/*",
+        "*://*.adfox.ru/*"
       ],
       "js": [
         "src/pages/content/index.tsx"
-      ]
+      ],
+      "all_frames": true,
+      "match_about_blank": true
     }
   ],
   "permissions": [
     "storage"
+  ],
+  "host_permissions": [
+    "https://api.nbrb.by/*",
+    "https://open.er-api.com/*",
+    "https://api.frankfurter.dev/*"
   ]
 }

@@ -33,7 +33,7 @@ const TARGET_CONFIGS: PriceTargetConfig[] = [
   { selector: '.price' },
 
   // Salon model banner
-  { selector: '.salon-listing-model__banner-priсe' },
+  { selector: '.salon-listing-model__banner-priсe', customStyle: { color: "white", paddingLeft: "15px" } },
 
   // Salon items in search
   { selector: '.salon-listing-items__item-price-byn' },
