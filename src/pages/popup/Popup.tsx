@@ -134,9 +134,12 @@ export const Popup: React.FC = () => {
       </div>
       
       {/* Subtle Footer */}
-      <div className="px-6 py-3 bg-[#f0f4f8] border-t border-[#dee4e9] flex justify-center">
-        <p className="text-[9px] text-[#91979c] font-medium uppercase tracking-[0.2em]">
-          Powered by AV.BY Price Converter
+      <div className="px-6 py-3 bg-[#f0f4f8] border-t border-[#dee4e9] flex justify-between items-center">
+        <p className="text-[8px] text-[#91979c] font-medium uppercase tracking-[0.1em]">
+          v{browser.runtime.getManifest().version}
+        </p>
+        <p className="text-[8px] text-[#91979c] font-medium uppercase tracking-[0.1em]">
+          AV.BY Конвертер
         </p>
       </div>
     </div>
