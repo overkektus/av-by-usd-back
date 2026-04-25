@@ -60,9 +60,17 @@ export function processPrices(usdRate: number) {
       const amountByn = parseInt(cleanText, 10);
       
       if (!isNaN(amountByn) && amountByn > 0) {
-        const amountUsd = Math.round(amountByn / usdRate);
+        const convertedAmount = amountByn / usdRate;
         
-        const formattedUsd = new Intl.NumberFormat('ru-RU').format(amountUsd) + ' $';
+        // Logical rounding:
+        // - Under 100: show 2 decimal places (cents matter for parts/accessories)
+        // - 100 and above: round to whole number
+        const showDecimals = convertedAmount < 100;
+        
+        const formattedUsd = new Intl.NumberFormat('ru-RU', {
+          minimumFractionDigits: showDecimals ? 2 : 0,
+          maximumFractionDigits: showDecimals ? 2 : 0,
+        }).format(convertedAmount) + ' $';
         
         const usdDiv = document.createElement('div');
         usdDiv.className = 'av-usd-converted-price';
