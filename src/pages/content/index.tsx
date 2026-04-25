@@ -3,6 +3,7 @@ import { rateManager } from '../../api';
 import { processPrices } from './converter';
 import { logger } from '../../api/utils/logger';
 import { Currency } from '../../api/types';
+import { TARGET_CONFIGS } from './core/configs';
 
 async function init() {
   const getCurrency = async (): Promise<Currency> => {
@@ -11,6 +12,12 @@ async function init() {
   };
 
   const runConversion = async () => {
+    const hasUnprocessed = TARGET_CONFIGS.some(config => 
+      document.querySelector(`${config.selector}:not(.usd-processed)`)
+    );
+
+    if (!hasUnprocessed) return;
+
     try {
       const currency = await getCurrency();
       const rate = await rateManager.fetchBestRate(currency);
@@ -23,19 +30,17 @@ async function init() {
   // Initial run
   await runConversion();
 
-  // Watch for DOM changes (throttled)
   let timeoutId: number | null = null;
   const observer = new MutationObserver(() => {
     if (timeoutId) window.clearTimeout(timeoutId);
     timeoutId = window.setTimeout(runConversion, 200);
   });
 
-  observer.observe(document.body, {
+  observer.observe(document.documentElement, {
     childList: true,
     subtree: true
   });
 
-  // Listen for settings changes
   browser.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && changes.targetCurrency) {
       runConversion();
