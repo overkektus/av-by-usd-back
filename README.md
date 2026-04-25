@@ -1,42 +1,46 @@
-# AV.BY USD Converter
+# USD Converter for av.by v2.0 🚀
 
-[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-Available-green.svg)](https://chromewebstore.google.com/detail/jbgcmehjngblmjcdpmjmhkbmajccjoco)
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-v2.0.0-blue.svg)](https://chromewebstore.google.com/detail/jbgcmehjngblmjcdpmjmhkbmajccjoco)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A lightweight, fast, and reliable extension that automatically converts vehicle prices on [av.by](https://av.by) to USD.
+A lightweight, fast, and beautiful extension that automatically converts vehicle prices on [av.by](https://av.by) to USD, EUR, or RUB.
+
+## ✨ What's New in v2.0 (Major Update)
+*   **💎 Premium Design**: Fully aligned with av.by's brand identity. Integrated brand fonts (**Montserrat**, **Open Sans**) and color palette.
+*   **🌀 Native Experience**: Shimmer effects, smooth transitions, glassmorphism, and haptic-like UI feedback.
+*   **📊 Precision & Clarity**: 4-decimal exchange rates with smart color-coding and visual hierarchy.
+*   **⚡️ Reactive Core**: Instant price conversion even on dynamically loaded content (infinite scroll).
 
 ## 📥 [Install from Chrome Web Store](https://chromewebstore.google.com/detail/jbgcmehjngblmjcdpmjmhkbmajccjoco)
 
 ## Features
-- **Real-time Conversion**: Automatically fetches the latest exchange rates to provide accurate USD prices right under the original BYN prices.
-- **Multiple Reliable Sources**: Uses a robust priority-based fallback system (NBRB -> Frankfurter -> ExchangeRate-API) to ensure exchange rates are always available.
-- **High Performance**: Uses an optimized `MutationObserver` with debouncing to seamlessly convert prices on dynamically loaded pages without slowing down your browser.
-- **Smart Caching**: Caches exchange rates locally (`chrome.storage.local`) for 1 hour to prevent API rate-limiting and save network requests.
-- **Privacy First**: No tracking, no analytics, and no extra permissions needed (only `storage`).
+-   **Real-time Conversion**: Automatically fetches the latest exchange rates and displays them right under the original BYN prices.
+-   **Multi-source Fallback**: Robust priority-based system (Site DOM -> NBRB -> Frankfurter -> ExchangeRate-API).
+-   **Smart Caching**: Local caching for 1 hour to ensure speed and bypass API limits.
+-   **Privacy First**: No tracking, no extra permissions, just pure utility.
 
 ## Development
-This extension is built using Vanilla TypeScript and Vite, ensuring a zero-bloat, lightning-fast bundle.
+Built with **React 19**, **TypeScript**, **Tailwind CSS 4**, and **Vite**.
 
 ### Prerequisites
-- Node.js >= 18
-- yarn or npm
+- Node.js >= 20
+- yarn
 
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd av-by-usd-back
-   ```
-2. Install dependencies:
-   ```bash
-   yarn install
-   ```
+### Quick Start
+1.  Install dependencies:
+    ```bash
+    yarn install
+    ```
+2.  Run in development mode:
+    ```bash
+    yarn dev:chrome
+    ```
+3.  Build for production:
+    ```bash
+    yarn build:chrome
+    ```
 
-### Building
-To build a production-ready version for Chrome:
-```bash
-yarn build:chrome
-```
-This will generate a `dist_chrome` folder containing the unpacked extension, which you can load into Chrome via `chrome://extensions/` -> **Load unpacked**.
+Production build will be available in the `dist_chrome` directory.
 
 ## License
 [MIT License](LICENSE)
