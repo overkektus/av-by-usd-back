@@ -1,5 +1,6 @@
 import { CourseFetcher } from './CourseFetcher';
 import type { ExchangeRateApiResponse } from '../types';
+import { API_ENDPOINTS } from '../constants';
 
 export class ExchangeRateApiFetcher extends CourseFetcher {
   get sourceName(): string { 
@@ -7,7 +8,7 @@ export class ExchangeRateApiFetcher extends CourseFetcher {
   }
 
   async fetchRate(): Promise<number> {
-    const res = await fetch('https://open.er-api.com/v6/latest/USD');
+    const res = await fetch(API_ENDPOINTS.EXCHANGE_RATE);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }

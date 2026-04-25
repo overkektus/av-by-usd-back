@@ -1,5 +1,6 @@
 import { CourseFetcher } from './fetchers/CourseFetcher';
 import { CacheManager } from './CacheManager';
+import { logger } from './utils/logger';
 
 export class RateManager {
   private fetchers: CourseFetcher[];
@@ -19,19 +20,17 @@ export class RateManager {
     for (const fetcher of this.fetchers) {
       try {
         const rate = await fetcher.fetchRate();
-        console.log(`[AV.BY USD] Successfully fetched rate from ${fetcher.sourceName}: ${rate}`);
+        logger.log(`Successfully fetched rate from ${fetcher.sourceName}: ${rate}`);
         
         await this.cacheManager.saveRate(rate);
 
         return rate;
       } catch (e) {
-        // We stay silent here because failing to find a rate in the DOM or from one of the APIs
-        // is an expected behavior in a fallback chain.
+        logger.warn(`Failed to fetch from ${fetcher.sourceName}: ${e instanceof Error ? e.message : e}`);
       }
     }
     
-    console.error('[AV.BY USD] All exchange rate fetchers failed.');
+    logger.error('All exchange rate fetchers failed.');
     throw new Error('All exchange rate fetchers failed.');
   }
 }
-

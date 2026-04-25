@@ -1,5 +1,6 @@
 import { CourseFetcher } from './CourseFetcher';
 import type { NbrbResponse } from '../types';
+import { API_ENDPOINTS } from '../constants';
 
 export class NbrbFetcher extends CourseFetcher {
   get sourceName(): string { 
@@ -7,7 +8,7 @@ export class NbrbFetcher extends CourseFetcher {
   }
 
   async fetchRate(): Promise<number> {
-    const res = await fetch('https://api.nbrb.by/exrates/rates/431');
+    const res = await fetch(API_ENDPOINTS.NBRB);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
