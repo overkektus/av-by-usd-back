@@ -6,26 +6,29 @@ export class DomFetcher extends CourseFetcher {
   }
 
   async fetchRate(): Promise<number> {
-    // Try to find the converter block on the current page
-    // This block exists on car detail pages (e.g. cars.av.by/audi/...)
+    // 1. Try desktop version (.main-converter)
     const converterEl = document.querySelector('.main-converter');
-    if (!converterEl) {
-      throw new Error('Converter element not found on current page');
-    }
-
-    const text = converterEl.textContent || '';
-
-    // Match pattern: "1 USD = 2.8 BYN" or "1 USD = 2,8 BYN"
-    const match = text.match(/1\s*USD\s*=\s*([\d.,]+)\s*BYN/i);
-
-    if (match && match[1]) {
-      // Replace comma with dot for parseFloat
-      const rate = parseFloat(match[1].replace(',', '.'));
-      if (!isNaN(rate) && rate > 0) {
-        return rate;
+    if (converterEl) {
+      const text = converterEl.textContent || '';
+      const match = text.match(/1\s*USD\s*=\s*([\d.,]+)\s*BYN/i);
+      if (match && match[1]) {
+        const rate = parseFloat(match[1].replace(',', '.'));
+        if (!isNaN(rate) && rate > 0) return rate;
       }
     }
 
-    throw new Error('Could not parse exchange rate from converter element');
+    // 2. Try mobile version nav link (usually only on main page)
+    const mobileLink = document.querySelector('a[href*="/currency"].main-nav__link, .main-nav__item--separate a');
+    if (mobileLink) {
+      const text = mobileLink.textContent || '';
+      // Matches "USD 2.82" or similar
+      const match = text.match(/USD\s*([\d.,]+)/i);
+      if (match && match[1]) {
+        const rate = parseFloat(match[1].replace(',', '.'));
+        if (!isNaN(rate) && rate > 0) return rate;
+      }
+    }
+
+    throw new Error('Exchange rate element not found on this page (intended fallback to API)');
   }
 }
