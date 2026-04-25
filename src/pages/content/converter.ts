@@ -39,7 +39,13 @@ const TARGET_CONFIGS: PriceTargetConfig[] = [
   { selector: '.salon-listing-items__item-price-byn' },
 
   // Salon car card primary price
-  { selector: '.salon-card__price-primary' }
+  { selector: '.salon-card__price-primary' },
+
+  // Salon listing tile price
+  { 
+    selector: '.salon-listing-tile__item-price',
+    insertPosition: 'beforeend' 
+  }
 ];
 
 export function processPrices(usdRate: number) {
