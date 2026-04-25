@@ -1,6 +1,10 @@
-# AV.by USD Converter
+# AV.BY USD Converter
 
-A lightweight, fast, and reliable Chrome/Firefox extension that automatically converts vehicle prices on [av.by](https://av.by) from Belarusian Rubles (BYN) to US Dollars (USD) using real-time exchange rates.
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-Available-green.svg)](https://chromewebstore.google.com/detail/jbgcmehjngblmjcdpmjmhkbmajccjoco)
+
+A lightweight, fast, and reliable extension that automatically converts vehicle prices on [av.by](https://av.by) to USD.
+
+## 📥 [Install from Chrome Web Store](https://chromewebstore.google.com/detail/jbgcmehjngblmjcdpmjmhkbmajccjoco)
 
 ## Features
 - **Real-time Conversion**: Automatically fetches the latest exchange rates to provide accurate USD prices right under the original BYN prices.
