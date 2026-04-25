@@ -81,10 +81,10 @@ export const Popup: React.FC = () => {
       
       <div className="p-7 space-y-8 flex-grow relative">
         {/* Master Switch */}
-        <div className="flex items-center justify-between bg-white p-5 rounded-[20px] border border-[#dee4e9] shadow-[0_2px_15px_-3px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_8px_25px_-5px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 active:scale-[0.99] group">
+        <div className="flex items-center justify-between bg-white p-5 rounded-[20px] border border-[#dee4e9] shadow-[0_2px_15px_-3px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_8px_25px_-5px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 active:scale-[0.99]">
           <div className="flex items-center gap-4">
             <div className={cn(
-              "p-3 rounded-2xl transition-all duration-500 transform group-hover:rotate-12",
+              "p-3 rounded-2xl transition-all duration-500",
               isEnabled ? "bg-[#0064d2]/10 text-[#0064d2]" : "bg-[#f0f4f8] text-[#91979c]"
             )}>
               <Power className="h-5 w-5" />
@@ -162,15 +162,27 @@ export const Popup: React.FC = () => {
       
       {/* Subtle Footer */}
       <div className="px-7 py-5 bg-[#f7f9fb] border-t border-[#dee4e9] flex justify-between items-center">
-        <span className="text-[9px] text-[#91979c] font-black uppercase tracking-[0.2em] opacity-40">
-          v{browser.runtime.getManifest().version}
-        </span>
-        <div className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-all duration-300 cursor-default group">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#0064d2] group-hover:scale-150 transition-transform" />
-          <span className="text-[9px] text-[#181a1b] font-black uppercase tracking-[0.2em]">
-            AV.BY CONVERTER
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1.5 cursor-default">
+            <div className="w-1 h-1 rounded-full bg-[#0064d2] opacity-40" />
+            <span className="text-[10px] text-[#181a1b] font-black uppercase tracking-[0.1em] opacity-40">
+              USD Converter for av.by
+            </span>
+          </div>
+          <span className="text-[8px] text-[#91979c] font-bold uppercase tracking-[0.2em] opacity-40 ml-2.5">
+            v{browser.runtime.getManifest().version}
           </span>
         </div>
+
+        <button 
+          onClick={() => browser.tabs.create({ url: 'https://github.com/overkektus/av-by-usd-back' })}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#dee4e9] hover:border-[#0064d2] hover:text-[#0064d2] text-[#91979c] transition-all shadow-sm hover:shadow-md active:scale-95 group"
+        >
+          <svg className="h-3 w-3 fill-current transition-colors" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.82 1.102.82 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+          </svg>
+          <span className="text-[9px] font-black uppercase tracking-[0.1em]">GitHub</span>
+        </button>
       </div>
     </div>
   );
