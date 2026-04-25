@@ -1,5 +1,5 @@
 import { CourseFetcher } from './CourseFetcher';
-import type { ExchangeRateApiResponse } from '../types';
+import { Currency, ExchangeRateApiResponse } from '../types';
 import { API_ENDPOINTS } from '../constants';
 
 export class ExchangeRateApiFetcher extends CourseFetcher {
@@ -7,8 +7,9 @@ export class ExchangeRateApiFetcher extends CourseFetcher {
     return 'ExchangeRate-API'; 
   }
 
-  async fetchRate(): Promise<number> {
-    const res = await fetch(API_ENDPOINTS.EXCHANGE_RATE);
+  async fetchRate(currency: Currency): Promise<number> {
+    const url = API_ENDPOINTS.EXCHANGE_RATE.replace('{CUR}', currency);
+    const res = await fetch(url);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }

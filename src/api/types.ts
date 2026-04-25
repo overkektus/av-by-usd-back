@@ -1,3 +1,5 @@
+export type Currency = 'USD' | 'EUR' | 'RUB';
+
 export interface NbrbResponse {
   Cur_ID: number;
   Date: string;

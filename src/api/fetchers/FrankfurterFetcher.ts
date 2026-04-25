@@ -1,5 +1,5 @@
 import { CourseFetcher } from './CourseFetcher';
-import type { FrankfurterV2Response } from '../types';
+import { Currency, FrankfurterV2Response } from '../types';
 import { API_ENDPOINTS } from '../constants';
 
 export class FrankfurterFetcher extends CourseFetcher {
@@ -7,8 +7,9 @@ export class FrankfurterFetcher extends CourseFetcher {
     return 'Frankfurter'; 
   }
 
-  async fetchRate(): Promise<number> {
-    const res = await fetch(API_ENDPOINTS.FRANKFURTER);
+  async fetchRate(currency: Currency): Promise<number> {
+    const url = API_ENDPOINTS.FRANKFURTER.replace('{CUR}', currency);
+    const res = await fetch(url);
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }

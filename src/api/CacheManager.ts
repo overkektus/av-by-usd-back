@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill';
 import { CACHE_KEY, CACHE_TTL_MS } from './constants';
 import { logger } from './utils/logger';
+import { Currency } from './types';
 
 interface CachedRate {
   rate: number;
@@ -16,34 +17,40 @@ export class CacheManager {
     this.ttlMs = ttlMs;
   }
 
-  async getValidRate(): Promise<number | null> {
+  private getCurrencyKey(currency: Currency): string {
+    return `${this.cacheKey}_${currency.toLowerCase()}`;
+  }
+
+  async getValidRate(currency: Currency): Promise<number | null> {
     try {
-      const storage = await browser.storage.local.get(this.cacheKey);
-      const cached = storage[this.cacheKey] as CachedRate | undefined;
+      const key = this.getCurrencyKey(currency);
+      const storage = await browser.storage.local.get(key);
+      const cached = storage[key] as CachedRate | undefined;
 
       if (cached && cached.timestamp) {
         const now = Date.now();
         if (now - cached.timestamp < this.ttlMs) {
-          logger.log(`Using cached rate: ${cached.rate} (from ${new Date(cached.timestamp).toLocaleTimeString()})`);
+          logger.log(`[${currency}] Using cached rate: ${cached.rate}`);
           return cached.rate;
         }
       }
     } catch (e) {
-      logger.warn('Failed to read cache', e);
+      logger.warn(`[${currency}] Failed to read cache`, e);
     }
     return null;
   }
 
-  async saveRate(rate: number): Promise<void> {
+  async saveRate(currency: Currency, rate: number): Promise<void> {
     try {
+      const key = this.getCurrencyKey(currency);
       await browser.storage.local.set({
-        [this.cacheKey]: {
+        [key]: {
           rate,
           timestamp: Date.now()
         }
       });
     } catch (e) {
-      logger.warn('Failed to write cache', e);
+      logger.warn(`[${currency}] Failed to write cache`, e);
     }
   }
 }

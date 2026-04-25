@@ -1,8 +1,10 @@
+import { Currency } from '../types';
+
 export abstract class CourseFetcher {
   /**
-   * Returns the rate of USD in BYN (how many BYN is 1 USD)
+   * Returns the rate of the given currency in BYN (how many BYN is 1 unit of currency)
    */
-  abstract fetchRate(): Promise<number>;
+  abstract fetchRate(currency: Currency): Promise<number>;
   
   /**
    * Name of the exchange rate source
