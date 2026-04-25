@@ -1,5 +1,6 @@
 {
   "manifest_version": 3,
+  "version": "1.0.0",
   "name": "USD Converter for av.by",
   "description": "Converts prices on av.by to USD",
   "icons": {
