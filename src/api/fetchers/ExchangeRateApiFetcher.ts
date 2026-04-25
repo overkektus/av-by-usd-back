@@ -1,5 +1,5 @@
 import { CourseFetcher } from './CourseFetcher';
-import type { ExchangeRateApiResponse } from './types';
+import type { ExchangeRateApiResponse } from '../types';
 
 export class ExchangeRateApiFetcher extends CourseFetcher {
   get sourceName(): string { 

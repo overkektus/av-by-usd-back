@@ -1,5 +1,5 @@
 import { CourseFetcher } from './CourseFetcher';
-import type { FrankfurterV2Response } from './types';
+import type { FrankfurterV2Response } from '../types';
 
 export class FrankfurterFetcher extends CourseFetcher {
   get sourceName(): string { 

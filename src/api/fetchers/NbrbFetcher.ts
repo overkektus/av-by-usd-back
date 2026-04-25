@@ -1,5 +1,5 @@
 import { CourseFetcher } from './CourseFetcher';
-import type { NbrbResponse } from './types';
+import type { NbrbResponse } from '../types';
 
 export class NbrbFetcher extends CourseFetcher {
   get sourceName(): string { 

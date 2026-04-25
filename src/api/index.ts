@@ -1,9 +1,6 @@
 import { RateManager } from './RateManager';
 import { CacheManager } from './CacheManager';
-import { NbrbFetcher } from './NbrbFetcher';
-import { ExchangeRateApiFetcher } from './ExchangeRateApiFetcher';
-import { FrankfurterFetcher } from './FrankfurterFetcher';
-import { DomFetcher } from './DomFetcher';
+import { DomFetcher, NbrbFetcher, ExchangeRateApiFetcher, FrankfurterFetcher } from './fetchers';
 
 // Instantiate the manager with priority order and cache
 export const rateManager = new RateManager(

@@ -1,4 +1,4 @@
-import { CourseFetcher } from './CourseFetcher';
+import { CourseFetcher } from './fetchers/CourseFetcher';
 import { CacheManager } from './CacheManager';
 
 export class RateManager {
