@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "version": "1.0.0",
-  "name": "USD Converter for av.by",
-  "description": "Converts prices on av.by to USD",
+  "name": "av.by Конвертер цен",
+  "description": "Автоматический пересчет цен на av.by в доллары, евро или российские рубли.",
   "icons": {
     "16": "avby-usd-back16x16.png",
     "32": "avby-usd-back32x32.png",

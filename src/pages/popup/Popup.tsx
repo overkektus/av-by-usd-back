@@ -61,7 +61,7 @@ export const Popup: React.FC = () => {
       <div className="bg-blue-600 px-5 py-4 flex items-center justify-between shadow-sm flex-shrink-0">
         <h1 className="text-lg font-extrabold text-white flex items-center gap-2 tracking-tight">
           <span className="bg-white text-blue-600 px-2 py-0.5 rounded-md text-xs font-black shadow-sm">AV</span>
-          Price Converter
+          Конвертер цен
         </h1>
         <div className={`h-2 w-2 rounded-full animate-pulse shadow-lg ${isEnabled ? 'bg-green-400 shadow-green-400/50' : 'bg-slate-400'}`} />
       </div>
@@ -74,8 +74,8 @@ export const Popup: React.FC = () => {
               <Power className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-900 dark:text-slate-100">Extension Status</p>
-              <p className="text-[10px] text-slate-500">{isEnabled ? 'Active and converting' : 'Currently paused'}</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-slate-100">Статус расширения</p>
+              <p className="text-[10px] text-slate-500">{isEnabled ? 'Активно и работает' : 'Временно отключено'}</p>
             </div>
           </div>
           <Switch checked={isEnabled} onCheckedChange={handleToggle} />
@@ -84,16 +84,16 @@ export const Popup: React.FC = () => {
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="currency" className="text-[10px] uppercase tracking-widest font-bold text-slate-400 dark:text-slate-500 ml-1">
-              Preferred Currency
+              Валюта для пересчета
             </Label>
             <Select value={currency} onValueChange={handleCurrencyChange}>
               <SelectTrigger id="currency" className="w-full h-12 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all shadow-sm">
-                <SelectValue placeholder="Select currency" />
+                <SelectValue placeholder="Выберите валюту" />
               </SelectTrigger>
               <SelectContent side="bottom" sideOffset={8} avoidCollisions={false}>
-                <SelectItem value="USD" className="py-3">USD ($) - US Dollar</SelectItem>
-                <SelectItem value="EUR" className="py-3">EUR (€) - Euro</SelectItem>
-                <SelectItem value="RUB" className="py-3">RUB (₽) - Russian Ruble</SelectItem>
+                <SelectItem value="USD" className="py-3">USD ($) — Доллар США</SelectItem>
+                <SelectItem value="EUR" className="py-3">EUR (€) — Евро</SelectItem>
+                <SelectItem value="RUB" className="py-3">RUB (₽) — Российский рубль</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -101,14 +101,15 @@ export const Popup: React.FC = () => {
           {/* Rate Info */}
           <div className="flex items-center justify-between px-1">
             <div className="flex flex-col">
-              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-tight">Current Rate</span>
+              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-tight">Текущий курс</span>
               <span className="text-sm font-mono font-bold text-slate-700 dark:text-slate-300">
-                {isLoading ? 'Loading...' : rate ? `1 ${currency} = ${rate.toFixed(4)} BYN` : '---'}
+                {isLoading ? 'Загрузка...' : rate ? `1 ${currency} = ${rate.toFixed(4)} BYN` : '---'}
               </span>
             </div>
             <button 
               onClick={handleRefresh}
               disabled={isLoading}
+              title="Обновить курс"
               className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-400 hover:text-blue-600 disabled:opacity-50"
             >
               <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
@@ -118,7 +119,7 @@ export const Popup: React.FC = () => {
       </div>
 
       <div className="px-6 py-4 bg-white/50 dark:bg-black/20 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center mt-auto">
-        <span className="text-[10px] font-mono text-slate-300 dark:text-slate-600 uppercase tracking-widest italic">Live Exchange Rates</span>
+        <span className="text-[10px] font-mono text-slate-300 dark:text-slate-600 uppercase tracking-widest italic">Актуальные курсы валют</span>
         <span className="text-[10px] font-mono text-slate-300 dark:text-slate-600">v2.1.0</span>
       </div>
     </div>
