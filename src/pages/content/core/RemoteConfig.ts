@@ -3,14 +3,18 @@ import { PriceTargetConfig, RemoteConfigPayload, CachedRemoteConfig } from './ty
 import { TARGET_CONFIGS as LOCAL_CONFIGS } from './configs';
 import { logger } from '../../../api/utils/logger';
 
-const CONFIG_URL = 'https://raw.githubusercontent.com/overkektus/av-by-usd-back/main/remote-config.json';
+const DEFAULT_CONFIG_URL = 'https://raw.githubusercontent.com/overkektus/av-by-usd-back/main/remote-config.json';
+const DEFAULT_TTL = 1000 * 60 * 60 * 1; // 1 hour
+
+const CONFIG_URL = import.meta.env.VITE_REMOTE_CONFIG_URL || DEFAULT_CONFIG_URL;
 const CACHE_KEY = 'remote_selectors_config';
-const CACHE_TTL = 1000 * 60 * 60 * 1; // 1 hour
+const CACHE_TTL = Number(import.meta.env.VITE_REMOTE_CONFIG_TTL) || DEFAULT_TTL;
 
 export class RemoteConfigManager {
   private static instance: RemoteConfigManager;
   private currentConfigs: PriceTargetConfig[] = LOCAL_CONFIGS;
   private lastUpdateTimestamp: number = 0;
+  private updatePromise: Promise<void> | null = null;
 
   private constructor() {}
 
@@ -22,11 +26,23 @@ export class RemoteConfigManager {
   }
 
   public async initialize(): Promise<void> {
-    await this.loadFromCache();
+    // If an initialization is already in progress, return its promise
+    if (this.updatePromise) {
+      return this.updatePromise;
+    }
+
+    this.updatePromise = (async () => {
+      await this.loadFromCache();
+      
+      if (!this.isCacheValid(this.lastUpdateTimestamp)) {
+        await this.updateFromRemote();
+      }
+    })();
     
-    // Refresh from GitHub only if cache is missing or expired
-    if (!this.isCacheValid(this.lastUpdateTimestamp)) {
-      this.updateFromRemote().catch(err => logger.error('Remote config background update failed', err));
+    try {
+      await this.updatePromise;
+    } finally {
+      this.updatePromise = null;
     }
   }
 
@@ -57,6 +73,9 @@ export class RemoteConfigManager {
         if (this.isCacheValid(cached.timestamp)) {
           logger.info('Using cached remote selectors', { count: cached.configs.length });
           this.applyRemoteConfigs(cached.configs);
+        } else {
+          logger.info('Cache expired, removing stale data');
+          await browser.storage.local.remove(CACHE_KEY);
         }
       }
     } catch (e) {
@@ -66,44 +85,38 @@ export class RemoteConfigManager {
 
   private async updateFromRemote(): Promise<void> {
     try {
+      logger.info('Fetching remote config from GitHub...', { url: CONFIG_URL });
       const response = await fetch(`${CONFIG_URL}?t=${Date.now()}`);
-      if (!response.ok) return;
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const payload = await response.json();
       
       if (this.validatePayload(payload)) {
         const now = Date.now();
-        logger.info('Remote config updated from GitHub', { count: payload.selectors.length });
+        logger.info('Remote config updated successfully', { count: payload.selectors.length });
         this.applyRemoteConfigs(payload.selectors);
         this.lastUpdateTimestamp = now;
         await this.saveToCache(payload.selectors, now);
       } else {
-        logger.warn('Invalid remote config payload received from GitHub');
+        logger.warn('Invalid remote config payload received');
       }
     } catch (e) {
-      logger.warn('Could not fetch remote config, staying with defaults');
+      logger.warn('Could not fetch remote config, staying with current');
     }
   }
 
   private async saveToCache(configs: PriceTargetConfig[], timestamp: number): Promise<void> {
-    const cacheData: CachedRemoteConfig = {
-      configs,
-      timestamp
-    };
+    const cacheData: CachedRemoteConfig = { configs, timestamp };
     await browser.storage.local.set({ [CACHE_KEY]: cacheData });
   }
 
   private applyRemoteConfigs(remoteSelectors: PriceTargetConfig[]): void {
     const merged = [...LOCAL_CONFIGS];
-    
-    // Add remote selectors only if they are unique
     for (const remote of remoteSelectors) {
-      const isAlreadyDefined = merged.some(c => c.selector === remote.selector);
-      if (!isAlreadyDefined) {
+      if (!merged.some(c => c.selector === remote.selector)) {
         merged.push(remote);
       }
     }
-    
     this.currentConfigs = merged;
   }
 }
