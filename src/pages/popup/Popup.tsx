@@ -163,13 +163,7 @@ export const Popup: React.FC = () => {
       {/* Subtle Footer */}
       <div className="px-7 py-5 bg-[#f7f9fb] border-t border-[#dee4e9] flex justify-between items-center">
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-1.5 cursor-default">
-            <div className="w-1 h-1 rounded-full bg-[#0064d2] opacity-40" />
-            <span className="text-[10px] text-[#181a1b] font-black uppercase tracking-[0.1em] opacity-40">
-              USD Converter for av.by
-            </span>
-          </div>
-          <span className="text-[8px] text-[#91979c] font-bold uppercase tracking-[0.2em] opacity-40 ml-2.5">
+          <span className="text-[10px] text-[#91979c] font-black uppercase tracking-[0.2em] opacity-40">
             v{browser.runtime.getManifest().version}
           </span>
         </div>
