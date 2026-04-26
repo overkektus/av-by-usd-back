@@ -4,6 +4,9 @@ export const logger = {
   log: (message: string, ...args: any[]) => {
     console.log(`${LOG_PREFIX} ${message}`, ...args);
   },
+  info: (message: string, ...args: any[]) => {
+    console.info(`${LOG_PREFIX} ${message}`, ...args);
+  },
   warn: (message: string, ...args: any[]) => {
     console.warn(`${LOG_PREFIX} ${message}`, ...args);
   },

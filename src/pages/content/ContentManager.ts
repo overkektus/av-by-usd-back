@@ -3,7 +3,7 @@ import { rateManager } from '../../api';
 import { processPrices } from './converter';
 import { logger } from '../../api/utils/logger';
 import { Currency } from '../../api/types';
-import { TARGET_CONFIGS } from './core/configs';
+import { remoteConfigManager } from './core/RemoteConfig';
 import { injectStyles } from './styles';
 
 export class ContentManager {
@@ -12,6 +12,7 @@ export class ContentManager {
 
   async init() {
     injectStyles();
+    await remoteConfigManager.initialize();
     await this.runConversion();
     this.setupObserver();
     this.setupStorageListener();
@@ -30,7 +31,8 @@ export class ContentManager {
       return;
     }
 
-    const hasUnprocessed = TARGET_CONFIGS.some(config => 
+    const configs = remoteConfigManager.getConfigs();
+    const hasUnprocessed = configs.some(config => 
       document.querySelector(`${config.selector}:not(.usd-processed)`)
     );
 

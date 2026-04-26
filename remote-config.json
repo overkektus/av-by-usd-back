@@ -1,0 +1,23 @@
+{
+  "selectors": [
+    { "selector": ".card__price-button" },
+    { "selector": ".listing-top__price-primary" },
+    { "selector": ".listing-index__price" },
+    { 
+      "selector": ".salon-listing-top__prices", 
+      "customStyle": { "color": "#fff" }
+    },
+    { "selector": ".listing-item__price-primary" },
+    { "selector": ".price" },
+    { 
+      "selector": ".salon-listing-model__banner-priсe", 
+      "customStyle": { "color": "white", "paddingLeft": "15px" } 
+    },
+    { "selector": ".salon-listing-items__item-price-byn" },
+    { "selector": ".salon-card__price-primary" },
+    { 
+      "selector": ".salon-listing-tile__item-price",
+      "insertPosition": "beforeend" 
+    }
+  ]
+}

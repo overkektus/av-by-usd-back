@@ -7,3 +7,12 @@ export interface PriceTargetConfig {
   backgroundColor?: string;
   customStyle?: Partial<CSSStyleDeclaration>;
 }
+
+export interface RemoteConfigPayload {
+  selectors: PriceTargetConfig[];
+}
+
+export interface CachedRemoteConfig {
+  configs: PriceTargetConfig[];
+  timestamp: number;
+}

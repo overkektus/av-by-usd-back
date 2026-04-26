@@ -1,10 +1,11 @@
-import { TARGET_CONFIGS } from "./core/configs";
+import { remoteConfigManager } from "./core/RemoteConfig";
 import { Currency } from "../../api/types";
 import { parseBynPrice, formatConvertedPrice } from "./utils";
 import { createPriceElement, removeExistingConversion } from "./ui";
 
 export function processPrices(rate: number, currency: Currency) {
-  for (const config of TARGET_CONFIGS) {
+  const configs = remoteConfigManager.getConfigs();
+  for (const config of configs) {
     const elements = document.querySelectorAll(`${config.selector}:not(.usd-processed)`);
     
     elements.forEach((el) => {

@@ -13,7 +13,8 @@
     "zip": "yarn zip:chrome && yarn zip:firefox",
     "dev": "nodemon --config nodemon.chrome.json",
     "dev:chrome": "nodemon --config nodemon.chrome.json",
-    "dev:firefox": "nodemon --config nodemon.firefox.json"
+    "dev:firefox": "nodemon --config nodemon.firefox.json",
+    "validate-config": "node scripts/validate-config.cjs"
   },
   "type": "module",
   "dependencies": {
