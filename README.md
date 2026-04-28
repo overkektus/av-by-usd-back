@@ -1,11 +1,12 @@
-# USD Converter for av.by v2.0 🚀
+# USD Converter for av.by v2.1.0 🚀
 
-[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-v2.0.0-blue.svg)](https://chromewebstore.google.com/detail/jbgcmehjngblmjcdpmjmhkbmajccjoco)
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-v2.1.0-blue.svg)](https://chromewebstore.google.com/detail/jbgcmehjngblmjcdpmjmhkbmajccjoco)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A lightweight, fast, and beautiful extension that automatically converts vehicle prices on [av.by](https://av.by) to USD, EUR, or RUB.
 
-## ✨ What's New in v2.0 (Major Update)
+## ✨ What's New in v2.1.0 (Latest Update)
+*   **🛠 Dynamic Configuration**: Remote config support for instant selector updates without re-installing.
 *   **💎 Premium Design**: Fully aligned with av.by's brand identity. Integrated brand fonts (**Montserrat**, **Open Sans**) and color palette.
 *   **🌀 Native Experience**: Shimmer effects, smooth transitions, glassmorphism, and haptic-like UI feedback.
 *   **📊 Precision & Clarity**: 4-decimal exchange rates with smart color-coding and visual hierarchy.
@@ -14,6 +15,7 @@ A lightweight, fast, and beautiful extension that automatically converts vehicle
 ## 📥 [Install from Chrome Web Store](https://chromewebstore.google.com/detail/jbgcmehjngblmjcdpmjmhkbmajccjoco)
 
 ## Features
+-   **Dynamic Configuration**: Support for remote updates to stay compatible with site changes.
 -   **Real-time Conversion**: Automatically fetches the latest exchange rates and displays them right under the original BYN prices.
 -   **Multi-source Fallback**: Robust priority-based system (Site DOM -> NBRB -> Frankfurter -> ExchangeRate-API).
 -   **Smart Caching**: Local caching for 1 hour to ensure speed and bypass API limits.
