@@ -1,16 +1,17 @@
-# USD Converter for av.by v2.1.0 🚀
+# USD Converter for av.by v2.2.0 🚀
 
-[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-v2.1.0-blue.svg)](https://chromewebstore.google.com/detail/jbgcmehjngblmjcdpmjmhkbmajccjoco)
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-v2.2.0-blue.svg)](https://chromewebstore.google.com/detail/jbgcmehjngblmjcdpmjmhkbmajccjoco)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A lightweight, fast, and beautiful extension that automatically converts vehicle prices on [av.by](https://av.by) to USD, EUR, or RUB.
 
-## ✨ What's New in v2.1.0 (Latest Update)
+## ✨ What's New in v2.2.0
+*   **🏦 Bank Selection**: Choose specific banks as sources for real-time exchange rates.
+*   **💱 Multi-Currency Support**: Instant conversion to **USD**, **EUR**, or **RUB**.
+*   **💎 Premium UI 2.0**: Refined design with improved typography, compact status bar, and better accessibility.
+*   **🚀 Smarter Dropdowns**: Optimized selection menus that always fit within the extension window.
+*   **⚡️ Reactive Core**: Prices on the page now update instantly when you change settings in the popup.
 *   **🛠 Dynamic Configuration**: Remote config support for instant selector updates without re-installing.
-*   **💎 Premium Design**: Fully aligned with av.by's brand identity. Integrated brand fonts (**Montserrat**, **Open Sans**) and color palette.
-*   **🌀 Native Experience**: Shimmer effects, smooth transitions, glassmorphism, and haptic-like UI feedback.
-*   **📊 Precision & Clarity**: 4-decimal exchange rates with smart color-coding and visual hierarchy.
-*   **⚡️ Reactive Core**: Instant price conversion even on dynamically loaded content (infinite scroll).
 
 ## 📥 [Install from Chrome Web Store](https://chromewebstore.google.com/detail/jbgcmehjngblmjcdpmjmhkbmajccjoco)
 
