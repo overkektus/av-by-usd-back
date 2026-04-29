@@ -1,6 +1,6 @@
 {
   "name": "av-by-usd-converter",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Converts BYN prices on av.by to USD using real-time exchange rates.",
   "author": "Egor Piskunov",
   "license": "MIT",
