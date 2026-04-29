@@ -10,29 +10,37 @@ import {
 } from '../../components/ui/select';
 import { Label } from '../../components/ui/label';
 import { Switch } from '../../components/ui/switch';
-import { RefreshCw, Power } from 'lucide-react';
+import { RefreshCw, Power, Landmark } from 'lucide-react';
 import { cn, withMinDelay } from '../../lib/utils';
 import { rateManager } from '../../api';
+import { myFinService, SUPPORTED_BANKS, MyFinData } from '../../api/myfin';
 
 const MIN_LOADING_MS = 400;
 
 export const Popup: React.FC = () => {
   const [currency, setCurrency] = useState<Currency>('USD');
   const [isEnabled, setIsEnabled] = useState(true);
+  const [selectedBank, setSelectedBank] = useState<string>('nbrb');
+  const [myFinData, setMyFinData] = useState<MyFinData | null>(null);
   const [rate, setRate] = useState<number | null>(null);
   const [displayRate, setDisplayRate] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchCurrentRate = async (cur: Currency, force = false) => {
+  const fetchCurrentRate = async (cur: Currency, bankId = 'nbrb', force = false) => {
     setIsLoading(true);
     try {
-      const val = await withMinDelay(rateManager.fetchBestRate(cur, force), MIN_LOADING_MS);
-      setRate(val);
-      if (displayRate === null) {
-        setDisplayRate(val);
-      } else {
-        setDisplayRate(val); 
+      let val: number | null = null;
+      
+      if (bankId !== 'nbrb') {
+        val = await withMinDelay(myFinService.getRateForBank(cur, bankId), MIN_LOADING_MS);
       }
+      
+      if (val === null) {
+        val = await withMinDelay(rateManager.fetchBestRate(cur, force), MIN_LOADING_MS);
+      }
+
+      setRate(val);
+      setDisplayRate(val);
     } catch (e) {
       console.error(e);
     } finally {
@@ -40,13 +48,22 @@ export const Popup: React.FC = () => {
     }
   };
 
+  const fetchMyFinStatus = async (cur: Currency) => {
+    const data = await myFinService.getRates(cur);
+    setMyFinData(data);
+  };
+
   useEffect(() => {
-    browser.storage.local.get(['targetCurrency', 'isEnabled']).then((res) => {
+    browser.storage.local.get(['targetCurrency', 'isEnabled', 'selectedBank']).then((res) => {
       if (res.targetCurrency) setCurrency(res.targetCurrency as Currency);
       if (res.isEnabled !== undefined) setIsEnabled(!!res.isEnabled);
+      if (res.selectedBank) setSelectedBank(res.selectedBank as string);
       
       const currentCur = (res.targetCurrency as Currency) || 'USD';
-      fetchCurrentRate(currentCur);
+      const currentBank = (res.selectedBank as string) || 'nbrb';
+      
+      fetchCurrentRate(currentCur, currentBank);
+      fetchMyFinStatus(currentCur);
     });
   }, []);
 
@@ -54,7 +71,14 @@ export const Popup: React.FC = () => {
     const newCurrency = val as Currency;
     setCurrency(newCurrency);
     await browser.storage.local.set({ targetCurrency: newCurrency });
-    fetchCurrentRate(newCurrency);
+    fetchCurrentRate(newCurrency, selectedBank);
+    fetchMyFinStatus(newCurrency);
+  };
+
+  const handleBankChange = async (val: string) => {
+    setSelectedBank(val);
+    await browser.storage.local.set({ selectedBank: val });
+    fetchCurrentRate(currency, val);
   };
 
   const handleToggle = async (checked: boolean) => {
@@ -62,10 +86,10 @@ export const Popup: React.FC = () => {
     await browser.storage.local.set({ isEnabled: checked });
   };
 
-  const handleRefresh = () => fetchCurrentRate(currency, true);
+  const handleRefresh = () => fetchCurrentRate(currency, selectedBank, true);
 
   return (
-    <div className="p-0 min-w-[380px] min-h-[360px] bg-[#f7f9fb] shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[24px] overflow-hidden border border-[#dee4e9] flex flex-col transition-all duration-500">
+    <div className="p-0 min-w-[380px] min-h-[580px] bg-[#f7f9fb] shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[24px] overflow-hidden border border-[#dee4e9] flex flex-col transition-all duration-500">
       {/* Branded Header */}
       <div className="bg-[#0064d2] px-6 py-5 flex items-center justify-between shadow-[0_4px_12px_rgba(0,100,210,0.2)] flex-shrink-0 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 translate-x-[-100%] animate-[shimmer_3s_infinite]" />
@@ -79,7 +103,7 @@ export const Popup: React.FC = () => {
         )} />
       </div>
       
-      <div className="p-7 space-y-8 flex-grow relative">
+      <div className="p-7 space-y-6 flex-grow relative">
         {/* Master Switch */}
         <div className="flex items-center justify-between bg-white p-5 rounded-[20px] border border-[#dee4e9] shadow-[0_2px_15px_-3px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_8px_25px_-5px_rgba(0,0,0,0.07)] hover:-translate-y-0.5 active:scale-[0.99]">
           <div className="flex items-center gap-4">
@@ -108,7 +132,7 @@ export const Popup: React.FC = () => {
 
         {/* Configuration */}
         <div className={cn(
-          "space-y-7 transition-all duration-700",
+          "space-y-4 transition-all duration-700",
           !isEnabled && "opacity-30 pointer-events-none grayscale blur-[2px] scale-[0.97]"
         )}>
           <div className="space-y-3">
@@ -116,22 +140,79 @@ export const Popup: React.FC = () => {
               Валюта для пересчета
             </Label>
             <Select value={currency} onValueChange={handleCurrencyChange}>
-              <SelectTrigger id="currency" className="w-full h-14 bg-white border-[#dee4e9] hover:border-[#0064d2] focus:ring-4 focus:ring-[#0064d2]/10 transition-all rounded-[18px] shadow-sm text-[15px] font-bold px-5">
+              <SelectTrigger id="currency" className="w-full h-12 bg-white border-[#dee4e9] hover:border-[#0064d2] focus:ring-4 focus:ring-[#0064d2]/10 transition-all rounded-[18px] shadow-sm text-[15px] font-bold px-5">
                 <SelectValue placeholder="Выберите валюту" />
               </SelectTrigger>
-              <SelectContent side="bottom" sideOffset={10} className="rounded-xl border-[#dee4e9] shadow-xl">
-                <SelectItem value="USD" className="py-3.5 font-bold focus:bg-[#0064d2]/5 focus:text-[#0064d2]">USD — Доллар США</SelectItem>
-                <SelectItem value="EUR" className="py-3.5 font-bold focus:bg-[#0064d2]/5 focus:text-[#0064d2]">EUR — Евро</SelectItem>
-                <SelectItem value="RUB" className="py-3.5 font-bold focus:bg-[#0064d2]/5 focus:text-[#0064d2]">RUB — Российский рубль</SelectItem>
+              <SelectContent side="bottom" sideOffset={10} avoidCollisions={false} className="rounded-xl border-[#dee4e9] shadow-xl p-1">
+                <SelectItem value="USD" className="py-3.5 font-bold focus:bg-[#0064d2]/5 focus:text-[#0064d2] rounded-lg">
+                  <div className="flex items-center justify-between w-full">
+                    <span className="flex items-center gap-2">🇺🇸 <span className="opacity-90">USD — Доллар США</span></span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="EUR" className="py-3.5 font-bold focus:bg-[#0064d2]/5 focus:text-[#0064d2] rounded-lg">
+                  <div className="flex items-center justify-between w-full">
+                    <span className="flex items-center gap-2">🇪🇺 <span className="opacity-90">EUR — Евро</span></span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="RUB" className="py-3.5 font-bold focus:bg-[#0064d2]/5 focus:text-[#0064d2] rounded-lg">
+                  <div className="flex items-center justify-between w-full">
+                    <span className="flex items-center gap-2">🇷🇺 <span className="opacity-90">RUB — Рос. рубль</span></span>
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="space-y-3">
+          {myFinData && (
+            <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-500">
+              <Label htmlFor="bank" className="text-[10px] uppercase tracking-[0.2em] font-black text-[#91979c] ml-1.5 flex items-center gap-1.5">
+                <Landmark className="h-3 w-3" />
+                Источник курса
+              </Label>
+              <Select value={selectedBank} onValueChange={handleBankChange}>
+                <SelectTrigger id="bank" className="w-full h-12 bg-white border-[#dee4e9] hover:border-[#0064d2] focus:ring-4 focus:ring-[#0064d2]/10 transition-all rounded-[18px] shadow-sm text-[14px] font-bold px-5">
+                  <SelectValue placeholder="Выберите банк" />
+                </SelectTrigger>
+                <SelectContent position="popper" side="bottom" sideOffset={10} avoidCollisions={false} className="rounded-xl border-[#dee4e9] shadow-xl max-h-[300px] w-[var(--radix-select-trigger-width)] p-1">
+                  <SelectItem value="nbrb" className="py-1.5 font-bold focus:bg-[#0064d2]/5 focus:text-[#0064d2] rounded-lg">
+                    <div className="flex items-center justify-between w-full">
+                      <span className="flex items-center gap-2">🏦 <span className="opacity-90 text-[13px]">НБРБ (Официальный)</span></span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="best" className="py-1.5 font-bold focus:bg-[#0064d2]/5 focus:text-[#0064d2] rounded-lg">
+                    <div className="flex items-center justify-between w-full gap-4">
+                      <span className="flex items-center gap-2 text-[13px]">⭐ <span className="text-[#0bb978]">Лучший в банках</span></span>
+                      <span className="text-[10px] font-black bg-[#0bb978]/10 text-[#0bb978] px-2 py-0.5 rounded-md border border-[#0bb978]/20">
+                        {myFinData.bestSell.toFixed(4)}
+                      </span>
+                    </div>
+                  </SelectItem>
+                  <div className="h-px bg-[#dee4e9] my-1 mx-2" />
+                  {SUPPORTED_BANKS.filter(b => b.enabled).map(bank => {
+                    const bankData = myFinData.banks.find(bd => bd.bankId === bank.id);
+                    return (
+                      <SelectItem key={bank.id} value={bank.id} className="py-1.5 focus:bg-[#0064d2]/5 focus:text-[#0064d2] rounded-lg">
+                        <div className="flex items-center justify-between w-full gap-4">
+                          <span className="text-[12px] font-medium opacity-90 truncate">{bank.name}</span>
+                          {bankData && (
+                            <span className="text-[10px] font-bold text-[#5f676e] bg-[#f0f4f8] px-2 py-0.5 rounded-md border border-[#dee4e9]/50">
+                              {bankData.sellRate.toFixed(4)}
+                            </span>
+                          )}
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          <div className="space-y-1.5">
             <Label className="text-[10px] uppercase tracking-[0.2em] font-black text-[#91979c] ml-1.5">
               Текущий курс
             </Label>
-            <div className="group flex items-center justify-between bg-[#f0f4f8] px-6 py-5 rounded-[22px] border border-transparent hover:border-[#dee4e9] transition-all duration-500 shadow-inner-sm relative overflow-hidden">
+            <div className="group flex items-center justify-between bg-[#f0f4f8] px-6 py-4 rounded-[22px] border border-transparent hover:border-[#dee4e9] transition-all duration-500 shadow-inner-sm relative overflow-hidden">
               <div className="flex items-center gap-4 relative z-10">
                 <span className="text-[16px] font-display font-black text-[#5f676e] tracking-tight">
                   1 {currency}

@@ -33,6 +33,7 @@
   "host_permissions": [
     "https://api.nbrb.by/*",
     "https://open.er-api.com/*",
-    "https://api.frankfurter.dev/*"
+    "https://api.frankfurter.dev/*",
+    "https://myfin.by/*"
   ]
 }

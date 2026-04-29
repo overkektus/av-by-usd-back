@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import { rateManager } from '../../api';
+import { myFinService } from '../../api/myfin';
 import { processPrices } from './converter';
 import { logger } from '../../api/utils/logger';
 import { Currency } from '../../api/types';
@@ -24,7 +25,9 @@ export class ContentManager {
   }
 
   private runConversion = async () => {
-    const { isEnabled = true } = await browser.storage.local.get('isEnabled');
+    const storage = await browser.storage.local.get(['isEnabled', 'selectedBank']);
+    const isEnabled = storage.isEnabled !== false;
+    const selectedBank = (storage.selectedBank as string) || 'nbrb';
     
     if (!isEnabled) {
       this.cleanup();
@@ -40,7 +43,21 @@ export class ContentManager {
 
     try {
       const currency = await this.getCurrency();
-      const rate = await rateManager.fetchBestRate(currency);
+      let rate: number | null = null;
+
+      // Use MyFin for specific bank if selected
+      if (selectedBank !== 'nbrb') {
+        rate = await myFinService.getRateForBank(currency, selectedBank);
+        if (rate) {
+          logger.log(`Using MyFin rate for ${currency} bank: ${selectedBank} -> ${rate}`);
+        }
+      }
+
+      // Fallback to NBRB or if MyFin failed
+      if (!rate) {
+        rate = await rateManager.fetchBestRate(currency);
+      }
+
       processPrices(rate, currency);
     } catch (e) {
       logger.error('Failed to run conversion', e);
