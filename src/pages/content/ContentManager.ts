@@ -89,7 +89,7 @@ export class ContentManager {
 
   private setupStorageListener() {
     browser.storage.onChanged.addListener((changes, area) => {
-      if (area === 'local' && (changes.targetCurrency || changes.isEnabled)) {
+      if (area === 'local' && (changes.targetCurrency || changes.isEnabled || changes.selectedBank)) {
         if (changes.isEnabled && !changes.isEnabled.newValue) {
           this.cleanup();
         } else {
